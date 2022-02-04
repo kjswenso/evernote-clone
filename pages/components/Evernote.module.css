@@ -1,0 +1,60 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btnContainer, .inputContainer {
+    margin-top: 1rem;
+}
+
+.inputContainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button {
+    width: 15rem;
+    height: 4rem;
+    cursor: pointer;
+    background-color: #001;
+    border: 3px solid #212121;
+    color: #fff;
+    font-family: 'Supermercado One', cursive;
+    font-size: 1rem;
+    border-radius: 1rem;
+}
+
+.addInput {
+    width: 15rem;
+    height: 3rem;
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+    font-size: 1em;
+    border-radius: 0.7rem;
+    border: 2px solid #801805;
+}
+
+.addInput:focus {
+    border: 3px solid #801805;
+    font-size: 1.2em;
+    padding: 10px;
+}
+
+.newNote p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+}
+
+.saveBtn {
+    width: 10rem;
+    height: 2rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    background-color: #801805;
+    color: #fff;
+    border: 3px solid #64150791;
+}
