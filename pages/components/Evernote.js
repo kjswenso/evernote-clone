@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import styles from './Evernote.module.css';
+import { AiFillEdit } from 'react-icons/ai';
+import styles from './Evernote.module.scss';
 
 export default function Evernote() {
     const [isInputVisible, setInputVisible] = useState(false);
@@ -43,10 +44,13 @@ export default function Evernote() {
           </div>  
         )}
 
-        <div>
+        <div className={styles.showNotes}>
             {notesArray.length > 0 && notesArray.map((note) => {
                 return (
-                    <p>{note}</p>
+                    <div className={styles.innerNotes}>
+                        <AiFillEdit size={20} className={styles.editIcon} />
+                        <p>{note}</p>
+                    </div>
                 )
             })}
         </div>
