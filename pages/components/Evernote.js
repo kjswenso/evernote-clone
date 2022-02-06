@@ -3,6 +3,8 @@ import { AiFillEdit } from 'react-icons/ai';
 import styles from './Evernote.module.scss';
 import { app, database } from '../../firebaseConfig';
 import { collection, addDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
+import ReactQuill from './ReactQuill.js';
+
 
 const dbInstance = collection(database, 'notes');
 export default function Evernote() {
@@ -14,7 +16,6 @@ export default function Evernote() {
         getDocs(dbInstance)
         .then((data) => {
             setNotesArray(data.docs.map(item => {
-                console.log(item.data(), item.id)
                 return {...item.data(), id: item.id}
             }))
         })
@@ -24,18 +25,28 @@ export default function Evernote() {
     const [isUpdate, setIsUpdate] = useState(false)
     const [isInputVisible, setInputVisible] = useState(false);
     const [note, setNote] = useState('');
+    const [noteDesc, setNoteDesc] = useState('');
     const [notesArray, setNotesArray] = useState([]);
+    
     const addNote = () => {
         setIsUpdate(false)
         setInputVisible(true);
     }
 
+    const addNoteDesc = (e) => {
+        console.log('setting add note desc...')
+        setNoteDesc(e);
+        console.log('value: ', e)
+    }
+
     const saveNote = () => {
         setNote('')
+        setNoteDesc('')
         // setNotesArray([...notesArray, note]);
 
         addDoc(dbInstance, {
-            note: note
+            note: note,
+            noteDesc: noteDesc
         })
         .then(() => {
             getData()
@@ -44,10 +55,12 @@ export default function Evernote() {
 
     const editNote = () => {
         setNote('')
+        // setNoteDesc('')
         const collectionById = doc(database, 'notes', id)
 
         updateDoc(collectionById, {
-            note: note
+            note: note,
+            noteDesc: noteDesc
         })
         .then(() => {
             getData()
@@ -59,13 +72,13 @@ export default function Evernote() {
         setIsUpdate(true)
         setInputVisible(true)
         setNote(note)
+        setNoteDesc(noteDesc)
 
         const collectionById = doc(database, 'notes', id)
 
         updateDoc(collectionById, {
             note: note
         })
-        console.log(id, note);
     }
     
     return (
@@ -86,6 +99,10 @@ export default function Evernote() {
             placeholder="Enter the title" 
             type="text" 
             />
+            <div className={styles.reactQuill}>
+            <ReactQuill 
+                addNoteDesc={addNoteDesc} />
+            </div>
             {isUpdate ? (
                 <button 
                     onClick={editNote}
