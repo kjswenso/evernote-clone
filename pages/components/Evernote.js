@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { AiFillEdit } from 'react-icons/ai';
+import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import styles from './Evernote.module.scss';
-import { app, database } from '../../firebaseConfig';
-import { collection, addDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
-import ReactQuill from './ReactQuill.js';
+import { database } from '../../firebaseConfig';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
 const dbInstance = collection(database, 'notes');
@@ -33,10 +34,8 @@ export default function Evernote() {
         setInputVisible(true);
     }
 
-    const addNoteDesc = (e) => {
-        console.log('setting add note desc...')
-        setNoteDesc(e);
-        console.log('value: ', e)
+    const addNoteDesc = (value) => {
+        setNoteDesc(value);
     }
 
     const saveNote = () => {
@@ -55,7 +54,8 @@ export default function Evernote() {
 
     const editNote = () => {
         setNote('')
-        // setNoteDesc('')
+        setNoteDesc('')
+
         const collectionById = doc(database, 'notes', id)
 
         updateDoc(collectionById, {
@@ -65,9 +65,20 @@ export default function Evernote() {
         .then(() => {
             getData()
         })
+
+        setIsUpdate(false)
     }
 
-    const getId = (id, note) => {
+    const deleteNote = (id) => {
+        const collectionById = doc(database, 'notes', id)
+        
+        deleteDoc(collectionById)
+        .then(() => {
+            getData()
+        })
+    }
+
+    const getId = (id, note, noteDesc) => {
         setId(id)
         setIsUpdate(true)
         setInputVisible(true)
@@ -100,8 +111,11 @@ export default function Evernote() {
             type="text" 
             />
             <div className={styles.reactQuill}>
-            <ReactQuill 
-                addNoteDesc={addNoteDesc} />
+                <ReactQuill 
+                    theme="snow"
+                    value={noteDesc}
+                    onChange={addNoteDesc}
+                />
             </div>
             {isUpdate ? (
                 <button 
@@ -129,10 +143,18 @@ export default function Evernote() {
                 return (
                     <div className={styles.innerNotes}>
                         <AiFillEdit 
-                            onClick={() => getId(note.id, note.note)}
+                            onClick={() => getId(note.id, note.note, note.noteDesc)}
                             size={20} 
                             className={styles.editIcon} />
+
+                        <AiFillDelete
+                            onClick={() => deleteNote(note.id)}
+                            size={20} 
+                            className={styles.deleteIcon} />
                         <p>{note.note}</p>
+
+                        <div dangerouslySetInnerHTML={{__html: note.noteDesc}}></div>
+
                     </div>
                 )
             })}
